@@ -7,21 +7,12 @@ $q = 'dump.txt';
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
 
-    $sql = $conn->exec("CREATE TABLE 'tasks' (
-'id' int(11) NOT NULL AUTO_INCREMENT,
-'description' text NOT NULL,
-'is_done' tinyint(4) NOT NULL DEFAULT '0',
-'date_added' datetime NOT NULL,
-PRIMARY KEY ('id')
-)");
-
-    if ($_POST) {
-
+    if(isset($_POST['newTask'])){
         $data = $conn->prepare('INSERT INTO tasks VALUES(:description)');
         $fieldData = $_POST['newTask'];
-        $data->bindParam(':description', $fieldData);
-        $var = $data->execute();
-
+        $data->bindParam(':description', $fieldData, PDO::PARAM_STR);
+        $data->execute();
+        echo ($_POST['newTask']);
     }
 
 }
