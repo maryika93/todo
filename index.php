@@ -8,11 +8,11 @@ try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
 
     if(isset($_POST['newTask'])){
-        $data = $conn->prepare('INSERT INTO tasks VALUES(:description)');
         $fieldData = $_POST['newTask'];
-        $data->bindParam(':description', $fieldData, PDO::PARAM_STR);
+        $isdone = "В процессе";
+        $data = $conn->prepare('INSERT INTO `tasks`(`description`, `is_done`, `date_added`, `do`) VALUES ($fieldData, $isdone, date("y.m.d.H:i:s"), do)');
+        $data->bindParam(':description', $fieldData);
         $data->execute();
-        echo ($_POST['newTask']);
     }
 
 }
@@ -37,4 +37,19 @@ catch(PDOException $e)
         <td align="center">  </td>
     </tr>
 
+    <?php
+    $data = $conn->query('SELECT * FROM tasks');
+    foreach($data as $rows) {
+        echo '<pre>';
+        print_r($data);
+        ?>
+            <tr>
+                <td align="center"><?php echo $rows['id'] ?></td>
+                <td align="center"><?php echo $rows['description'] ?></td>
+                <td align="center"><?php echo $rows['is_done'] ?></td>
+                <td align="center"><?php echo date("y.m.d.H:i:s") ?></td>
+            </tr>
+        <?php
+    }
+    ?>
 </table>
